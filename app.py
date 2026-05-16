@@ -128,10 +128,10 @@ with st.sidebar:
     st.markdown("## 🔍 Filters")
 
     countries = sorted(df["country"].dropna().unique().tolist())
-    sel_countries = st.multiselect("Country", countries, default=countries[:3] if len(countries) >= 3 else countries)
+    sel_countries = st.multiselect("Country", countries, default=[])
 
     prop_types = sorted(df["property_type"].dropna().unique().tolist())
-    sel_props  = st.multiselect("Property Type", prop_types, default=prop_types[:5] if len(prop_types) >= 5 else prop_types)
+    sel_props = st.multiselect("Property Type", prop_types, default=[])
 
     price_min, price_max = 0, int(df["price"].dropna().quantile(0.97))
     price_range = st.slider("Price per Night (USD)", price_min, price_max, (price_min, price_max))
@@ -236,9 +236,7 @@ st.markdown("<div class='section-header'>Ratings & Amenities</div>", unsafe_allo
 r3a, r3b = st.columns([2, 1])
 
 with r3a:
-    scatter_df = fdf.dropna(subset=["price", "rating"])
-if len(scatter_df) > 1500:
-    scatter_df = scatter_df.sample(1500)
+    scatter_df = fdf.dropna(subset=["price", "rating"]).sample(min(1500, len(fdf)))
     fig_scatter = px.scatter(
         scatter_df, x="price", y="rating",
         color="room_type", opacity=0.6, size_max=8,
