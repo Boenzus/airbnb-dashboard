@@ -236,7 +236,9 @@ st.markdown("<div class='section-header'>Ratings & Amenities</div>", unsafe_allo
 r3a, r3b = st.columns([2, 1])
 
 with r3a:
-    scatter_df = fdf.dropna(subset=["price", "rating"]).sample(min(1500, len(fdf)))
+    scatter_df = fdf.dropna(subset=["price", "rating"])
+if len(scatter_df) > 1500:
+    scatter_df = scatter_df.sample(1500)
     fig_scatter = px.scatter(
         scatter_df, x="price", y="rating",
         color="room_type", opacity=0.6, size_max=8,
